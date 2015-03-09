@@ -38,7 +38,7 @@ printf "Kernel: %s\n" "$(uname -r)"
 printf "Kernels installed: "
 if hash pacman; then
   printf "\n"
-  pacman -Q | sed 's/ /_/g' | awk -F "_" '/^linux/ && !/headers|firmware/ {printf "\t[%s]\t%s\n", $2, $1}' | sort -r
+  pacman -Q | awk '/^linux/ && !/headers|firmware/ {printf "\t[%s]\t%s\n", $2, $1}' | sort -r
 else
   printf "[pacman not installed]\n"
 fi
