@@ -1,0 +1,162 @@
+#!/bin/bash
+
+# videoinfo.sh
+# Usage: ./videoinfo (print normally)
+#        ./videoinfo | sprunge (pastebin output; see function down there vv)
+# Description: Print useful information about the system's video configuration. This script
+#              can also paste files to http://sprunge.us and be used to provide useful
+#              information to anyone helping you debug a video program.
+
+# Make this function into an alias to make it even more useful:
+#   alias sprunge='curl -F '\''sprunge=<-'\'' http://sprunge.us'
+#   Usage: <cmd> | sprunge
+#          sprunge </path/to/file
+#          cat -n /path/to/files/* | sprunge
+sprunge() {
+  curl -sF 'sprunge=<-' http://sprunge.us || return 1
+}
+
+printf "Arch: %s\n" "$(uname -m)"
+printf "Kernel: %s\n" "$(uname -r)"
+
+printf "Kernels installed:\n"
+pacman -Q | sed 's/ /_/g' | awk -F "_" '/^linux/ && !/headers|firmware/ {printf "\t[%s]\t%s\n", $2, $1}' | sort -r
+
+for id in $(lspci | awk '/VGA/ {print $1}'); do
+  printf "\nVideo Card: %s\n" "$(lspci | grep $id | awk 'BEGIN {FS=": "} {print $2}')"
+  driver=$(lspci -vmm -s $id -k | awk '/Driver/ {print $2}')
+  printf "\tKernel Driver: %s\n" $driver
+  printf "\tKMS: "
+  if [[ -e /sys/class/$driver/parameters/modeset ]]; then
+    if [[ "$(</sys/class/$driver/parameters/modeset)" == 1 ]]; then
+      printf "Enabled\n"
+    else
+      printf "Disabled\n"
+    fi
+  else
+      printf "Unsupported\n"
+  fi
+done
+
+printf "\nnomodeset: "
+if [[ "$(grep nomodeset /proc/cmdline)" ]]; then
+  printf "True\n"
+else
+  printf "False\n"
+fi
+
+if hash glxinfo; then
+  printf "Direct Rendering: %s\n" "$(glxinfo | awk 'BEGIN {FS=": "} /direct rendering/ {print $2}')"
+
+  printf "Direct Renderer: %s\n" "$(glxinfo | awk 'BEGIN {FS=": "} /renderer/ {print $2}')"
+else
+  printf "[glxinfo not installed]\n"
+fi
+
+printf "Xorg Drivers: "
+d=${DISPLAY:1}
+modules=$(awk '/LoadModule/ {print $5}' /var/log/Xorg.${d}.log | sed 's/"//g')
+gfx=('nvidia' 'nv' 'nouveau' 'fglrx' 'radeon' 'intel' 'vesa')
+vmods=()
+
+for m in $modules; do
+  for g in $gfx; do
+    if [[ $m == $g ]]; then
+      rx="Loading.*${m}.*.so"
+      if [[ "$(grep -E $rx /var/log/Xorg.0.log)" ]]; then
+        vmods+=($m)
+      fi
+    fi
+  done
+done
+
+if [[ "$vmods" ]]; then
+  vmods=($(printf "%s\n" "${vmods[@]}" | sort))
+  printf "%s " "${vmods[@]}"
+
+  printf "\nXorg Graphics: "
+  optimus_open1=('intel' 'nv')
+  optimus_open1=('intel' 'nouveau')
+  optimus_prop=('intel' 'nvidia')
+  atidsg_open=('intel' 'radeon')
+  atidsg_prop=('fglrx' 'intel')
+  if [[ $vmods == $optimus_open1 ]] || [[ $vmods == $optimus_open2 ]]; then
+    printf "Optimus (Intel & Nvidia) [OPEN SOURCE]\n"
+  elif [[ $vmods == $optimus_prop ]]; then
+    printf "Optimus (Intel & Nvidia) [PROPRIETARY]\n"
+  elif [[ $vmods == $atidsg_open ]]; then
+    printf "ATI Dynamic Switchable Graphics (Intel & AMD) [OPEN SOURCE]\n"
+  elif [[ $vmods == $atidsg_prop ]]; then
+    printf "ATI Dynamic Switchable Graphics (Intel & AMD) [PROPRIETARY]\n"
+  elif [[ $vmods == "intel" ]]; then
+    printf "Intel [OPEN]\n"
+  elif [[ $vmods == "nv" ]] || [[ $vmods == "nouveau" ]]; then
+    printf "Nvidia [OPEN]\n"
+  elif [[ $vmods == "radeon" ]]; then
+    printf "AMD [OPEN]\n"
+  elif [[ $vmods == "nvidia" ]]; then
+    printf "Nvidia [PROPRIETARY]\n"
+  elif [[ $vmods == "fglrx" ]]; then
+    printf "AMD [PROPRIETARY]\n"
+  elif [[ $vmods == "vesa" ]]; then
+    printf "VESA [OPEN]\n"
+  else
+    printf "Other\n"
+  fi
+else
+  printf "Unknown\n"
+fi
+
+printf "\nPress Enter to pastebin relevant stuff...\n"
+read
+
+printf "lspci: %s\n" "$(lspci -k | sprunge)"
+printf "dmesg: %s\n" "$(dmesg | sprunge)"
+printf "lsmod: %s\n" "$(lsmod | sprunge)"
+
+printf "\n"
+
+printf "Xorg log: "
+d=${DISPLAY:1}
+if [[ -e "$XDG_DATA_HOME/xorg/Xorg.${d}.log" ]]; then
+  xlog="$XDG_DATA_HOME/xorg/Xorg.${d}.log"
+elif [ -e /var/log/Xorg.${d}.log ]; then
+  xlog="/var/log/Xorg.${d}.log"
+fi
+if [[ "$xlog" ]]; then
+  printf "%s (%s)\n" "$(sprunge <"$xlog")" "$xlog"
+else
+  printf "Not Found\n"
+fi
+
+if [[ "$XINITRC" ]]; then
+  if [[ -e "$XINITRC" ]]; then
+    xinitrc="$XINITRC"
+  else
+    printf "[Warning: XINITRC set but does not exist!]\n"
+  fi
+elif [ -e "$HOME"/.xinitrc ]; then
+  xinitrc="$HOME"/.xinitrc
+fi
+if [[ "$xinitrc" ]]; then
+  printf "xinitrc: %s (%s)\n" "$(sprunge <"$xinitrc")" "$xinitrc"
+else
+  printf "xinitrc: Not Found\n"
+fi
+
+printf "xorg.conf: "
+xconf="/etc/X11/xorg.conf"
+if [ -e $xconf ]; then
+  printf "$xconf (%s)\n" "$(sprunge <$xconf)" $xconf
+else
+  printf "Not Found\n"
+fi
+
+printf "xorg.conf.d files: "
+xconfd="/etc/X11/xorg.conf.d/"
+if [ -e $xconfd/* ]; then
+  printf "%s (%s)\n" "$(cat -n $xconfd/* | sprunge)" $xconfd
+else
+  printf "None Found\n"
+fi
+
