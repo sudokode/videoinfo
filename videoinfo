@@ -35,8 +35,13 @@ sprunge() {
 printf "Arch: %s\n" "$(uname -m)"
 printf "Kernel: %s\n" "$(uname -r)"
 
-printf "Kernels installed:\n"
-pacman -Q | sed 's/ /_/g' | awk -F "_" '/^linux/ && !/headers|firmware/ {printf "\t[%s]\t%s\n", $2, $1}' | sort -r
+printf "Kernels installed: "
+if hash pacman; then
+  printf "\n"
+  pacman -Q | sed 's/ /_/g' | awk -F "_" '/^linux/ && !/headers|firmware/ {printf "\t[%s]\t%s\n", $2, $1}' | sort -r
+else
+  printf "[pacman not installed]\n"
+fi
 
 for id in $(lspci | awk '/VGA/ {print $1}'); do
   printf "\nVideo Card: %s\n" "$(lspci | grep $id | awk 'BEGIN {FS=": "} {print $2}')"
