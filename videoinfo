@@ -84,7 +84,7 @@ for m in $modules; do
   for g in $gfx; do
     if [[ $m == $g ]]; then
       rx="Loading.*${m}.*.so"
-      if [[ "$(grep -E $rx /var/log/Xorg.0.log)" ]]; then
+      if [[ "$(grep -E $rx /var/log/Xorg.${d}.log)" ]]; then
         vmods+=($m)
       fi
     fi
