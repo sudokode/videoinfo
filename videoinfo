@@ -60,7 +60,7 @@ for id in $(lspci | awk '/VGA/ {print $1}'); do
 done
 
 printf "\nnomodeset: "
-if grep nomodeset /proc/cmdline &>/dev/null; then
+if grep -qs nomodeset /proc/cmdline; then
   printf "True\n"
 else
   printf "False\n"
@@ -84,7 +84,7 @@ for m in $modules; do
   for g in $gfx; do
     if [[ $m == $g ]]; then
       rx="Loading.*${m}.*.so"
-      if grep -E $rx /var/log/Xorg.${d}.log &>/dev/null; then
+      if grep -qsE $rx /var/log/Xorg.${d}.log; then
         vmods+=($m)
       fi
     fi
