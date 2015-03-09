@@ -38,7 +38,10 @@ printf "Arch: %s\n" "$(uname -m)"
 printf "Kernel: %s\n" "$(uname -r)"
 
 printf "Kernels installed: "
-if hash pacman; then
+if hash expac; then
+  print "\n"
+  expac '%n %v' | awk '/^linux/ && !/headers|firmware/ {printf "\t[%s]\t%s\n", $2, $1}' | sort -r
+elif hash pacman; then
   printf "\n"
   pacman -Q | awk '/^linux/ && !/headers|firmware/ {printf "\t[%s]\t%s\n", $2, $1}' | sort -r
 else
