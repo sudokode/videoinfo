@@ -40,14 +40,11 @@ printf "Arch: %s\n" "$(uname -m)"
 printf "Kernel: %s\n" "$(uname -r)"
 
 printf "Kernels installed: "
-if hash expac &>/dev/null; then
-  printf "\n"
-  expac '%n %v' | awk '/^linux/ && !/headers|firmware/ {printf "\t[%s]\t%s\n", $2, $1}' | sort -r
-elif hash pacman &>/dev/null; then
-  printf "\n"
-  pacman -Q | awk '/^linux/ && !/headers|firmware/ {printf "\t[%s]\t%s\n", $2, $1}' | sort -r
+kernels=$(file /boot/vmlinuz-linux* | awk '/Linux kernel/ {printf "\t%s\n", $9}' | sort -r)
+if [[ "$kernels" ]]; then
+  printf "\n%s\n" "$kernels"
 else
-  printf "[expac/pacman not installed]\n"
+  printf "Unknown\n"
 fi
 
 for id in $(lspci | awk '/VGA/ {print $1}'); do
