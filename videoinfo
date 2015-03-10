@@ -28,6 +28,7 @@
 #   Usage: <cmd> | sprunge
 #          sprunge </path/to/file
 #          cat -n /path/to/files/* | sprunge
+set -e
 sprunge() {
   curl -sF 'sprunge=<-' http://sprunge.us || return 1
 }
@@ -45,7 +46,7 @@ elif hash pacman; then
   printf "\n"
   pacman -Q | awk '/^linux/ && !/headers|firmware/ {printf "\t[%s]\t%s\n", $2, $1}' | sort -r
 else
-  printf "[pacman not installed]\n"
+  printf "[expac/pacman not installed]\n"
 fi
 
 for id in $(lspci | awk '/VGA/ {print $1}'); do
@@ -53,8 +54,8 @@ for id in $(lspci | awk '/VGA/ {print $1}'); do
   driver=$(lspci -vmm -s $id -k | awk '/Driver/ {print $2}')
   printf "\tKernel Driver: %s\n" $driver
   printf "\tKMS: "
-  if [[ -e /sys/class/$driver/parameters/modeset ]]; then
-    if [[ "$(</sys/class/$driver/parameters/modeset)" == 1 ]]; then
+  if [[ -e /sys/module/$driver/parameters/modeset ]]; then
+    if [[ "$(</sys/module/$driver/parameters/modeset)" == 1 ]]; then
       printf "Enabled\n"
     else
       printf "Disabled\n"
@@ -185,4 +186,3 @@ if [ -e $xconfd/* ]; then
 else
   printf "None Found\n"
 fi
-
