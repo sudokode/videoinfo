@@ -146,7 +146,7 @@ d=${DISPLAY:1}
 data="${XDG_DATA_HOME:-$HOME/.local/share}"
 if [[ -e "$data/xorg/Xorg.${d}.log" ]]; then
   xlog="$data/xorg/Xorg.${d}.log"
-elif [ -e /var/log/Xorg.${d}.log ]; then
+elif [[ -e /var/log/Xorg.${d}.log ]]; then
   xlog="/var/log/Xorg.${d}.log"
 fi
 if [[ "$xlog" ]]; then
@@ -172,7 +172,7 @@ fi
 
 printf "xorg.conf: "
 xconf="/etc/X11/xorg.conf"
-if [ -e $xconf ]; then
+if [[ -e $xconf ]]; then
   printf "$xconf (%s)\n" "$(sprunge <$xconf)" $xconf
 else
   printf "Not Found\n"
@@ -180,7 +180,7 @@ fi
 
 printf "xorg.conf.d files: "
 xconfd="/etc/X11/xorg.conf.d/"
-if [ -e $xconfd/* ]; then
+if [[ -e $xconfd/* ]]; then
   printf "%s (%s)\n" "$(cat -n $xconfd/* | sprunge)" $xconfd
 else
   printf "None Found\n\n"
