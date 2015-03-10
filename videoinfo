@@ -106,11 +106,11 @@ if [[ "$vmods" ]]; then
   atidsg_open=('intel' 'radeon')
   atidsg_prop=('fglrx' 'intel')
   if [[ $vmods == $optimus_open1 ]] || [[ $vmods == $optimus_open2 ]]; then
-    printf "Optimus (Intel & Nvidia) [OPEN SOURCE]\n"
+    printf "Optimus (Intel & Nvidia) [OPEN]\n"
   elif [[ $vmods == $optimus_prop ]]; then
     printf "Optimus (Intel & Nvidia) [PROPRIETARY]\n"
   elif [[ $vmods == $atidsg_open ]]; then
-    printf "ATI Dynamic Switchable Graphics (Intel & AMD) [OPEN SOURCE]\n"
+    printf "ATI Dynamic Switchable Graphics (Intel & AMD) [OPEN]\n"
   elif [[ $vmods == $atidsg_prop ]]; then
     printf "ATI Dynamic Switchable Graphics (Intel & AMD) [PROPRIETARY]\n"
   elif [[ $vmods == "intel" ]]; then
