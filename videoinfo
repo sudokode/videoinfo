@@ -34,7 +34,7 @@ sprunge() {
 }
 
 printf "Report bad results: https://github.com/sudokode/videoinfo/issues\n\n"
-
+{
 printf "Arch: %s\n" "$(uname -m)"
 printf "Kernel: %s\n" "$(uname -r)"
 
@@ -184,5 +184,7 @@ xconfd="/etc/X11/xorg.conf.d/"
 if [ -e $xconfd/* ]; then
   printf "%s (%s)\n" "$(cat -n $xconfd/* | sprunge)" $xconfd
 else
-  printf "None Found\n"
+  printf "None Found\n\n"
 fi
+
+} | tee /dev/stderr | curl -sF 'sprunge=<-' http://sprunge.us
