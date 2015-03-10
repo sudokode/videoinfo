@@ -146,8 +146,9 @@ printf "\n"
 
 printf "Xorg log: "
 d=${DISPLAY:1}
-if [[ -e "$XDG_DATA_HOME/xorg/Xorg.${d}.log" ]]; then
-  xlog="$XDG_DATA_HOME/xorg/Xorg.${d}.log"
+data="${XDG_DATA_HOME:-$HOME/.local/share}"
+if [[ -e "$data/xorg/Xorg.${d}.log" ]]; then
+  xlog="$data/xorg/Xorg.${d}.log"
 elif [ -e /var/log/Xorg.${d}.log ]; then
   xlog="/var/log/Xorg.${d}.log"
 fi
