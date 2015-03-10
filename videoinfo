@@ -28,7 +28,7 @@
 #   Usage: <cmd> | sprunge
 #          sprunge </path/to/file
 #          cat -n /path/to/files/* | sprunge
-set -e
+set +e
 sprunge() {
   curl -sF 'sprunge=<-' http://sprunge.us || return 1
 }
@@ -188,4 +188,4 @@ else
   printf "None Found\n\n"
 fi
 
-} | tee /dev/stderr | curl -sF 'sprunge=<-' http://sprunge.us
+} | tee /dev/stderr | sprunge
