@@ -39,7 +39,7 @@ printf "Kernel: %s\n" "$(uname -r)"
 
 printf "Kernels installed: "
 if hash expac; then
-  print "\n"
+  printf "\n"
   expac '%n %v' | awk '/^linux/ && !/headers|firmware/ {printf "\t[%s]\t%s\n", $2, $1}' | sort -r
 elif hash pacman; then
   printf "\n"
@@ -49,7 +49,7 @@ else
 fi
 
 for id in $(lspci | awk '/VGA/ {print $1}'); do
-  printf "\nVideo Card: %s\n" "$(lspci | grep $id | awk 'BEGIN {FS=": "} {print $2}')"
+  printf "\nVideo Card: %s\n" "$(lspci | awk 'BEGIN {FS=": "} /'$id'/{print $2}')"
   driver=$(lspci -vmm -s $id -k | awk '/Driver/ {print $2}')
   printf "\tKernel Driver: %s\n" $driver
   printf "\tKMS: "
