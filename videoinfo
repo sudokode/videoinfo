@@ -30,7 +30,9 @@
 #          cat -n /path/to/files/* | sprunge
 set +e
 sprunge() {
-  curl -sF 'sprunge=<-' http://sprunge.us || return 1
+  lang=$1
+  url=$(curl -sF 'sprunge=<-' http://sprunge.us)
+  sed 's/$/?'$lang'/' <<< $url
 }
 
 printf "Report bad results: https://github.com/sudokode/videoinfo/issues\n\n"
@@ -142,9 +144,9 @@ fi
 printf "\nPress Enter to pastebin relevant stuff...\n"
 read
 
-printf "lspci: %s\n" "$(lspci -k | sprunge)"
-printf "dmesg: %s\n" "$(dmesg | sprunge)"
-printf "lsmod: %s\n" "$(lsmod | sprunge)"
+printf "lspci: %s\n" "$(lspci -k | sprunge 'text')"
+printf "dmesg: %s\n" "$(dmesg | sprunge 'text')"
+printf "lsmod: %s\n" "$(lsmod | sprunge 'text')"
 
 printf "\n"
 
@@ -157,7 +159,7 @@ elif [[ -e /var/log/Xorg.${d}.log ]]; then
   xlog="/var/log/Xorg.${d}.log"
 fi
 if [[ "$xlog" ]]; then
-  printf "%s (%s)\n" "$(sprunge <"$xlog")" "$xlog"
+  printf "%s (%s)\n" "$(sprunge 'text' <"$xlog")" "$xlog"
 else
   printf "Not Found\n"
 fi
@@ -172,7 +174,7 @@ elif [ -e "$HOME"/.xinitrc ]; then
   xinitrc="$HOME"/.xinitrc
 fi
 if [[ "$xinitrc" ]]; then
-  printf "xinitrc: %s (%s)\n" "$(sprunge <"$xinitrc")" "$xinitrc"
+  printf "xinitrc: %s (%s)\n" "$(sprunge 'sh' <"$xinitrc")" "$xinitrc"
 else
   printf "xinitrc: Not Found\n"
 fi
@@ -180,7 +182,7 @@ fi
 printf "xorg.conf: "
 xconf="/etc/X11/xorg.conf"
 if [[ -e $xconf ]]; then
-  printf "%s (%s)\n" "$(sprunge <$xconf)" $xconf
+  printf "%s (%s)\n" "$(sprunge 'text' <$xconf)" $xconf
 else
   printf "Not Found\n"
 fi
@@ -189,9 +191,9 @@ printf "xorg.conf.d files: "
 xconfd="/etc/X11/xorg.conf.d"
 files=(/etc/X11/xorg.conf.d)
 if [[ ${#files[@]} > 0 ]]; then
-  printf "%s (%s)\n\n" "$(cat -n $xconfd/* | sprunge)" $xconfd
+  printf "%s (%s)\n\n" "$(cat $xconfd/* | sprunge 'text')" $xconfd
 else
   printf "None Found\n\n"
 fi
 
-} | tee /dev/stderr | sprunge
+} | tee /dev/stderr | sprunge 'text'
