@@ -73,9 +73,14 @@ else
 fi
 
 if hash glxinfo &>/dev/null; then
-  printf "Direct Rendering: %s\n" "$(glxinfo | awk 'BEGIN {FS=": "} /direct rendering/ {print $2}')"
-
-  printf "Direct Renderer: %s\n" "$(glxinfo | awk 'BEGIN {FS=": "} /renderer/ {print $2}')"
+  dr="$(glxinfo | awk 'BEGIN {FS=": "} /direct rendering/ {print $2}')"
+  printf "Direct Rendering: "
+  if [[ $dr == "Yes" ]] || [[ $dr == "No" ]]; then
+    printf "%s\n" $dr
+    printf "Direct Renderer: %s\n" "$(glxinfo | awk 'BEGIN {FS=": "} /renderer/ {print $2}')"
+  else
+    printf "Unavailable\n"
+  fi
 else
   printf "[glxinfo not installed]\n"
 fi
