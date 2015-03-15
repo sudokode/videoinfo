@@ -61,7 +61,7 @@ for id in $(lspci | awk '/VGA/ {print $1}'); do
       printf "Disabled\n"
     fi
   else
-      printf "Unsupported\n"
+    printf "Unsupported\n"
   fi
 done
 
