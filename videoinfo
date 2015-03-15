@@ -175,7 +175,7 @@ fi
 printf "xorg.conf: "
 xconf="/etc/X11/xorg.conf"
 if [[ -e $xconf ]]; then
-  printf "$xconf (%s)\n" "$(sprunge <$xconf)" $xconf
+  printf "%s (%s)\n" "$(sprunge <$xconf)" $xconf
 else
   printf "Not Found\n"
 fi
