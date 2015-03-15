@@ -186,9 +186,10 @@ else
 fi
 
 printf "xorg.conf.d files: "
-xconfd="/etc/X11/xorg.conf.d/"
-if [[ -e $xconfd/* ]]; then
-  printf "%s (%s)\n" "$(cat -n $xconfd/* | sprunge)" $xconfd
+xconfd="/etc/X11/xorg.conf.d"
+files=(/etc/X11/xorg.conf.d)
+if [[ ${#files[@]} > 0 ]]; then
+  printf "%s (%s)\n\n" "$(cat -n $xconfd/* | sprunge)" $xconfd
 else
   printf "None Found\n\n"
 fi
