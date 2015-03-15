@@ -37,11 +37,13 @@ printf "Report bad results: https://github.com/sudokode/videoinfo/issues\n\n"
 
 {
 printf "Arch: %s\n" "$(uname -m)"
-printf "Kernel: %s\n" "$(uname -r)"
+kernel=$(uname -r)
+printf "Kernel: %s\n" $kernel
 
 printf "Kernels installed: "
 kernels=$(file /boot/vmlinuz-linux* | awk '/Linux kernel/ {printf "\t%s\n", $9}' | sort -r)
 if [[ "$kernels" ]]; then
+  kernels=$(sed 's/\('$kernel'\)/[\1]/' <<< "$kernels")
   printf "\n%s\n" "$kernels"
 else
   printf "Unknown\n"
