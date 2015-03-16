@@ -27,7 +27,7 @@
 #   alias sprunge='curl -F '\''sprunge=<-'\'' http://sprunge.us'
 #   Usage: <cmd> | sprunge
 #          sprunge </path/to/file
-#          cat -n /path/to/files/* | sprunge
+#          cat /path/to/files/* | sprunge
 set +e
 sprunge() {
   lang=$1
