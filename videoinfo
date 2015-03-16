@@ -23,11 +23,6 @@
 #              information to anyone helping you debug a video program.
 # Homepage: https://github.com/sudokode/videoinfo
 
-# Make this function into an alias to make it even more useful:
-#   alias sprunge='curl -F '\''sprunge=<-'\'' http://sprunge.us'
-#   Usage: <cmd> | sprunge
-#          sprunge </path/to/file
-#          cat /path/to/files/* | sprunge
 set +e
 
 sprunge() {
@@ -198,8 +193,8 @@ fi
 
 printf "xorg.conf: "
 xconf="/etc/X11/xorg.conf"
-if [[ -e $xconf ]]; then
-  printf "%s (%s)\n" "$(paste 'text' <$xconf)" $xconf
+if [[ -e "$xconf" ]]; then
+  printf "%s (%s)\n" "$(paste 'text' <"$xconf")" "$xconf"
 else
   printf "Not Found\n"
 fi
