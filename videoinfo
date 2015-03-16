@@ -107,6 +107,12 @@ fi
 
 printf "Xorg Drivers: "
 d=${DISPLAY:1}
+data="${XDG_DATA_HOME:-$HOME/.local/share}"
+if [[ -e "$data/xorg/Xorg.${d}.log" ]]; then
+  xlog="$data/xorg/Xorg.${d}.log"
+elif [[ -e /var/log/Xorg.${d}.log ]]; then
+  xlog="/var/log/Xorg.${d}.log"
+fi
 modules=$(awk '/LoadModule/ {print $5}' /var/log/Xorg.${d}.log | sed 's/"//g')
 gfx=('nvidia' 'nv' 'nouveau' 'fglrx' 'radeon' 'intel' 'vesa')
 vmods=()
@@ -169,13 +175,6 @@ printf "lsmod: %s\n" "$(lsmod | paste 'text')"
 printf "\n"
 
 printf "Xorg log: "
-d=${DISPLAY:1}
-data="${XDG_DATA_HOME:-$HOME/.local/share}"
-if [[ -e "$data/xorg/Xorg.${d}.log" ]]; then
-  xlog="$data/xorg/Xorg.${d}.log"
-elif [[ -e /var/log/Xorg.${d}.log ]]; then
-  xlog="/var/log/Xorg.${d}.log"
-fi
 if [[ "$xlog" ]]; then
   printf "%s (%s)\n" "$(paste 'text' <"$xlog")" "$xlog"
 else
