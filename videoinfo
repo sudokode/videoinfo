@@ -16,11 +16,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # videoinfo
-# Usage: videoinfo (print normally)
-#        videoinfo | sprunge (pastebin output; see function down there vv)
+# Usage: videoinfo
 # Description: Print useful information about the system's video configuration. This script
-#              can also paste files to http://sprunge.us and be used to provide useful
-#              information to anyone helping you debug a video program.
+#              can also paste files to http://sprunge.us or http://ix.ioand be used to provide
+#              useful information to anyone helping to debug a video problem.
 # Homepage: https://github.com/sudokode/videoinfo
 
 set +e
@@ -46,7 +45,6 @@ paste() {
     fi
   fi
 }
-
 
 printf "Report bad results: https://github.com/sudokode/videoinfo/issues\n\n"
 
