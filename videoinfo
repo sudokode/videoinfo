@@ -103,12 +103,8 @@ d=${DISPLAY:1}
 data="${XDG_DATA_HOME:-$HOME/.local/share}"
 if [[ -e "$data/xorg/Xorg.${d}.log" ]]; then
   xlog="$data/xorg/Xorg.${d}.log"
-elif [[ -e "$data/xorg/Xorg."$(($d+1))".log" ]]; then
-  xlog="$data/xorg/Xorg."$(($d+1))".log"
 elif [[ -e /var/log/Xorg.${d}.log ]]; then
   xlog="/var/log/Xorg.${d}.log"
-elif [[ -e /var/log/Xorg.${d}.log ]]; then
-  xlog="/var/log/Xorg."$(($d+1))".log"
 fi
 modules=$(awk '/LoadModule/ {print $5}' "$xlog" | sed 's/"//g')
 gfx=('nvidia' 'nv' 'nouveau' 'fglrx' 'radeon' 'intel' 'vesa')
