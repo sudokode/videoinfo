@@ -200,10 +200,14 @@ else
 fi
 
 printf "xorg.conf.d files: "
-xconfd="/etc/X11/xorg.conf.d"
+xconfd="/usr/share/X11/xorg.conf.d"
 files=($xconfd)
+if [[ ${#files[@]} == 0 ]]; then
+  xconfd="/etc/X11/xorg.conf.d"
+  files=($xconfd)
+fi
 if [[ ${#files[@]} > 0 ]]; then
-  printf "%s (%s)\n\n" "$(cat $xconfd/* | paste 'text')" $xconfd
+  printf "%s (%s)\n\n" "$(cat "$xconfd"/* | paste 'text')" "$xconfd"
 else
   printf "None Found\n\n"
 fi
