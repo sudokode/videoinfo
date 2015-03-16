@@ -29,11 +29,29 @@
 #          sprunge </path/to/file
 #          cat /path/to/files/* | sprunge
 set +e
+
 sprunge() {
-  lang=$1
-  url=$(curl -sF 'sprunge=<-' http://sprunge.us)
-  sed 's/$/?'$lang'/' <<< $url
+  curl -sF "sprunge=<-" sprunge.us
 }
+
+ix() {
+  curl -sF "f:1=<-" ix.io
+}
+
+paste() {
+  lang=$1
+
+  url=$(sprunge "$@")
+  if [[ "$url" ]]; then
+    sed 's/$/?'$lang'/' <<< $url
+  else
+    url=$(ix "$@")
+    if [[ "$url" ]]; then
+      sed 's:$:/'$lang':' <<< $url
+    fi
+  fi
+}
+
 
 printf "Report bad results: https://github.com/sudokode/videoinfo/issues\n\n"
 
@@ -144,9 +162,9 @@ fi
 printf "\nPress Enter to pastebin relevant stuff...\n"
 read
 
-printf "lspci: %s\n" "$(lspci -k | sprunge 'text')"
-printf "dmesg: %s\n" "$(dmesg | sprunge 'text')"
-printf "lsmod: %s\n" "$(lsmod | sprunge 'text')"
+printf "lspci: %s\n" "$(lspci -k | paste 'text')"
+printf "dmesg: %s\n" "$(dmesg | paste 'text')"
+printf "lsmod: %s\n" "$(lsmod | paste 'text')"
 
 printf "\n"
 
@@ -159,7 +177,7 @@ elif [[ -e /var/log/Xorg.${d}.log ]]; then
   xlog="/var/log/Xorg.${d}.log"
 fi
 if [[ "$xlog" ]]; then
-  printf "%s (%s)\n" "$(sprunge 'text' <"$xlog")" "$xlog"
+  printf "%s (%s)\n" "$(paste 'text' <"$xlog")" "$xlog"
 else
   printf "Not Found\n"
 fi
@@ -174,7 +192,7 @@ elif [ -e "$HOME"/.xinitrc ]; then
   xinitrc="$HOME"/.xinitrc
 fi
 if [[ "$xinitrc" ]]; then
-  printf "xinitrc: %s (%s)\n" "$(sprunge 'sh' <"$xinitrc")" "$xinitrc"
+  printf "xinitrc: %s (%s)\n" "$(paste 'sh' <"$xinitrc")" "$xinitrc"
 else
   printf "xinitrc: Not Found\n"
 fi
@@ -182,7 +200,7 @@ fi
 printf "xorg.conf: "
 xconf="/etc/X11/xorg.conf"
 if [[ -e $xconf ]]; then
-  printf "%s (%s)\n" "$(sprunge 'text' <$xconf)" $xconf
+  printf "%s (%s)\n" "$(paste 'text' <$xconf)" $xconf
 else
   printf "Not Found\n"
 fi
@@ -191,9 +209,9 @@ printf "xorg.conf.d files: "
 xconfd="/etc/X11/xorg.conf.d"
 files=($xconfd)
 if [[ ${#files[@]} > 0 ]]; then
-  printf "%s (%s)\n\n" "$(cat $xconfd/* | sprunge 'text')" $xconfd
+  printf "%s (%s)\n\n" "$(cat $xconfd/* | paste 'text')" $xconfd
 else
   printf "None Found\n\n"
 fi
 
-} | tee /dev/stderr | sprunge 'text'
+} | tee /dev/stderr | paste 'text'
