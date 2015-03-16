@@ -180,8 +180,10 @@ if [[ "$XINITRC" ]]; then
   else
     printf "[Warning: XINITRC set but does not exist!]\n"
   fi
-elif [ -e "$HOME"/.xinitrc ]; then
-  xinitrc="$HOME"/.xinitrc
+elif [[ -e "$HOME"/.xinitrc ]]; then
+  xinitrc="$HOME/.xinitrc"
+elif [[ -e "$HOME"/.config/X11/xinitrc ]]; then
+  xinitrc="$HOME/.config/X11/xinitrc"
 fi
 if [[ "$xinitrc" ]]; then
   printf "xinitrc: %s (%s)\n" "$(paste 'sh' <"$xinitrc")" "$xinitrc"
