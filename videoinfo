@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # videoinfo
-# Usage: videoinfo
+# Usage: ./videoinfo
 # Description: Print useful information about the system's video configuration. This script
 #              can also paste files to http://sprunge.us or http://ix.ioand be used to provide
 #              useful information to anyone helping to debug a video problem.
