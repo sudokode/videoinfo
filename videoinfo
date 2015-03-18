@@ -168,6 +168,7 @@ printf "lsmod: %s\n" "$(lsmod | paste 'text')"
 printf "\n"
 
 printf "Xorg log: "
+# The Xorg log is found when the modules are processed ^^
 if [[ "$xlog" ]]; then
   printf "%s (%s)\n" "$(paste 'text' <"$xlog")" "$xlog"
 else
