@@ -99,7 +99,7 @@ else
 fi
 
 printf "Xorg Drivers: "
-d=${DISPLAY:1}
+d=${DISPLAY:0}
 data="${XDG_DATA_HOME:-$HOME/.local/share}"
 if [[ -e "$data/xorg/Xorg.${d}.log" ]]; then
   xlog="$data/xorg/Xorg.${d}.log"
