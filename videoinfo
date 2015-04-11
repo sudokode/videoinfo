@@ -178,7 +178,7 @@ printf "\n"
 printf "Xorg log: "
 # The Xorg log is found when the modules are processed ^^
 if [[ "$xlog" ]]; then
-  if [[ $gdm == true]]; then
+  if [[ $gdm == true ]]; then
     printf "%s (%s)\n" "$(paste 'text' <<< "$xlog")" "gdm-x-session"
   else
     printf "%s (%s)\n" "$(paste 'text' <"$xlog")" "$xlog"
