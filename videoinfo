@@ -172,7 +172,7 @@ else
   printf "Unknown\n"
 fi
 
-printf "\nPress Enter to pastebin relevant stuff...\n"
+printf "\nPress Enter to pastebin relevant stuff...\n" >&2
 read
 
 printf "lspci: %s\n" "$(lspci -k | paste 'text')"
