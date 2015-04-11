@@ -67,14 +67,17 @@ for id in $(lspci | awk '/VGA/ {print $1}'); do
   driver=$(lspci -vmm -s $id -k | awk '/Driver/ {print $2}')
   printf "\tKernel Driver: %s\n" $driver
   if [[ -e /sys/module/$driver/parameters/modeset ]]; then
-    printf "Warning: Determining if KMS is enabled requires root access. Please enter your own password.\n" >&2
-    ms=$(sudo cat /sys/module/$driver/parameters/modeset)
-    sudo -k
-    printf "\tKMS: "
-    if [[ $ms == @(1|-1) ]]; then
-      printf "Enabled\n"
+    printf "Warning: Determining if KMS is enabled requires root access\n" >&2
+    ms=$(sudo cat /sys/module/$driver/parameters/modeset) 
+    if [[ -z $ms ]]; then
+      printf "\tKMS: Unknown"
     else
-      printf "Disabled\n"
+      sudo -k
+      if [[ $ms == @(1|-1) ]]; then
+        printf "\tKMS: Enabled\n"
+      else
+        printf "\tKMS: Disabled\n"
+      fi
     fi
   else
     printf "\tKMS: Unsupported\n"
