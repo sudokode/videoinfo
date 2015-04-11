@@ -93,7 +93,7 @@ if hash glxinfo &>/dev/null; then
   printf "Direct Rendering: "
   if [[ $dr == "Yes" ]] || [[ $dr == "No" ]]; then
     printf "%s\n" $dr
-    printf "Direct Renderer: %s\n" "$(glxinfo | awk 'BEGIN {FS=": "} /renderer/ {print $2}')"
+    printf "Direct Renderer: %s\n" "$(glxinfo | awk 'BEGIN {FS=": "} /OpenGL renderer/ {print $2}')"
   else
     printf "Unavailable\n"
   fi
