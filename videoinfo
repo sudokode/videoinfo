@@ -99,7 +99,7 @@ else
 fi
 
 printf "Xorg Drivers: "
-d=${DISPLAY:0}
+d=${DISPLAY:1}
 data="${XDG_DATA_HOME:-$HOME/.local/share}"
 gdm=false
 if systemctl is-active gdm-x-session &>/dev/null; then
@@ -178,7 +178,7 @@ printf "\n"
 printf "Xorg log: "
 # The Xorg log is found when the modules are processed ^^
 if [[ "$xlog" ]]; then
-  if [[ $gdm == true ]]; then
+  if $gdm; then
     printf "%s (%s)\n" "$(paste 'text' <<< "$xlog")" "gdm-x-session"
   else
     printf "%s (%s)\n" "$(paste 'text' <"$xlog")" "$xlog"
