@@ -68,7 +68,8 @@ for id in $(lspci | awk '/VGA/ {print $1}'); do
   printf "\tKernel Driver: %s\n" $driver
   printf "\tKMS: "
   if [[ -e /sys/module/$driver/parameters/modeset ]]; then
-    if [[ "$(</sys/module/$driver/parameters/modeset)" == 1 ]]; then
+    read ms /sys/module/$driver/parameters/modeset
+    if [[ $ms == 1 ]]; then
       printf "Enabled\n"
     else
       printf "Disabled\n"
