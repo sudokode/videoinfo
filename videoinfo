@@ -32,6 +32,15 @@ ix() {
   curl -sF "f:1=<-" ix.io
 }
 
+censor_mac() {
+  sed 's/\([0-9A-Za-z]\{2\}:\)\{5\}[0-9A-Za-z]\{2\}/de:ad:de:ad:de:ad/g'
+}
+
+hostname=$(hostname)
+censor_host() {
+  sed 's/"$hostname"/hostname/g'
+}
+
 paste() {
   lang=$1
 
@@ -177,7 +186,7 @@ read
 
 printf "lspci: %s\n" "$(lspci -k | paste 'text')"
 # sanitize MAC addresses
-printf "dmesg: %s\n" "$(dmesg | sed 's/\([0-9A-Za-z]\{2\}:\)\{5\}[0-9A-Za-z]\{2\}/c0:ff:ee:c0:ff:ee/g' | paste 'text')"
+printf "dmesg: %s\n" "$(dmesg | censor_mac | paste 'text')"
 printf "lsmod: %s\n" "$(lsmod | paste 'text')"
 
 printf "\n"
