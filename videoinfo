@@ -193,6 +193,7 @@ printf "dmidecode: %s\n" "$(sudo dmidecode | censor_serial | paste 'text')"
 # sanitize MAC addresses
 printf "dmesg: %s\n" "$(dmesg | censor_mac | paste 'text')"
 printf "lsmod: %s\n" "$(lsmod | paste 'text')"
+printf "packages installed: %s\n" "$(pacman -Qe | paste 'text')"
 
 printf "\n"
 
