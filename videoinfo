@@ -176,8 +176,7 @@ printf "\nPress Enter to pastebin relevant stuff...\n" >&2
 read
 
 printf "lspci: %s\n" "$(lspci -k | paste 'text')"
-# sanitize MAC addresses
-printf "dmesg: %s\n" "$(dmesg | sed 's/\([0-9A-Za-z]\{2\}:\)\{5\}[0-9A-Za-z]\{2\}/c0:ff:ee:c0:ff:ee/g' | paste 'text')"
+printf "dmesg: %s\n" "$(dmesg | paste 'text')"
 printf "lsmod: %s\n" "$(lsmod | paste 'text')"
 
 printf "\n"
