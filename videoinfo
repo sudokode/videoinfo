@@ -41,6 +41,10 @@ censor_host() {
   sed 's/"$hostname"/hostname/g'
 }
 
+censor_serial() {
+  sed '/Serial/d;/Asset/d;/UUID/d'
+}
+
 paste() {
   lang=$1
 
@@ -81,7 +85,6 @@ for id in $(lspci | awk '/VGA/ {print $1}'); do
     if [[ -z $ms ]]; then
       printf "\tKMS: Unknown"
     else
-      sudo -k
       if [[ $ms == @(1|-1) ]]; then
         printf "\tKMS: Enabled\n"
       else
@@ -185,6 +188,8 @@ printf "\nPress Enter to pastebin relevant stuff...\n"
 read
 
 printf "lspci: %s\n" "$(lspci -k | paste 'text')"
+printf "detailed lspci: %s\n" "$(sudo lspci -vvv | censor_serial | paste 'text')"
+printf "dmidecode: %s\n" "$(sudo dmidecode | censor_serial | paste 'text')"
 # sanitize MAC addresses
 printf "dmesg: %s\n" "$(dmesg | censor_mac | paste 'text')"
 printf "lsmod: %s\n" "$(lsmod | paste 'text')"
@@ -242,3 +247,5 @@ else
 fi
 
 } | tee /dev/stderr | paste 'text'
+
+sudo -k # Kill off any sudo permissions
