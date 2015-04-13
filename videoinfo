@@ -105,7 +105,12 @@ else
   printf "[glxinfo not installed]\n" >&2
 fi
 
+# No better way to do this right now
 d=${DISPLAY:1}
+if [[ -z $d ]]; then
+  d=0
+fi
+
 data="${XDG_DATA_HOME:-$HOME/.local/share}"
 gdm=false
 if systemctl is-active gdm-x-session &>/dev/null; then
