@@ -49,6 +49,7 @@ paste() {
 printf "Report bad results: https://github.com/sudokode/videoinfo/issues\n\n"
 
 {
+printf "Time: %s\n" "$(date --utc)"
 printf "Arch: %s\n" "$(uname -m)"
 kernel=$(uname -r)
 printf "Kernel: %s\n" $kernel
@@ -104,7 +105,6 @@ else
   printf "[glxinfo not installed]\n" >&2
 fi
 
-printf "Xorg Drivers: "
 d=${DISPLAY:1}
 data="${XDG_DATA_HOME:-$HOME/.local/share}"
 gdm=false
@@ -116,6 +116,16 @@ elif [[ -e "$data/xorg/Xorg.${d}.log" ]]; then
 elif [[ -e /var/log/Xorg.${d}.log ]]; then
   xlog="/var/log/Xorg.${d}.log"
 fi
+
+if [[ ! -z "$xlog" ]]; then
+  if [[ $gdm == true ]]; then
+    printf "\nX start time: %s\n" "$(date --utc -d "$(grep Time: <<< "$xlog" | awk -F Time: '{print $2}')")"
+  else
+    printf "\nX start time: %s\n" "$(date --utc -d "$(grep Time: "$xlog" | awk -F Time: '{print $2}')")"
+  fi
+fi
+
+printf "Xorg Drivers: "
 if [[ $gdm == true ]]; then
   modules=$(awk '/LoadModule/ {print $5}' <<< "$xlog" | sed 's/"//g')
 else
@@ -172,7 +182,8 @@ else
   printf "Unknown\n"
 fi
 
-printf "\nPress Enter to pastebin relevant stuff...\n" >&2
+printf "\n"
+printf "Press Enter to pastebin relevant stuff...\n" >&2
 read
 
 printf "lspci: %s\n" "$(lspci -k | paste 'text')"
@@ -181,13 +192,12 @@ printf "lsmod: %s\n" "$(lsmod | paste 'text')"
 
 printf "\n"
 
-printf "Xorg log: "
 # The Xorg log is found when the modules are processed ^^
 if [[ "$xlog" ]]; then
   if $gdm; then
-    printf "%s (%s)\n" "$(paste 'text' <<< "$xlog")" "gdm-x-session"
+    printf "Xorg log: %s (%s)\n" "$(paste 'text' <<< "$xlog")" "gdm-x-session"
   else
-    printf "%s (%s)\n" "$(paste 'text' <"$xlog")" "$xlog"
+    printf "Xorg log: %s (%s)\n" "$(paste 'text' <"$xlog")" "$xlog"
   fi
 else
   printf "Not Found\n"
