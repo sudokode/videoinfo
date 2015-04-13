@@ -101,7 +101,7 @@ if hash glxinfo &>/dev/null; then
     printf "Unavailable\n"
   fi
 else
-  printf "[glxinfo not installed]\n"
+  printf "[glxinfo not installed]\n" >&2
 fi
 
 printf "Xorg Drivers: "
@@ -197,7 +197,7 @@ if [[ "$XINITRC" ]]; then
   if [[ -e "$XINITRC" ]]; then
     xinitrc="$XINITRC"
   else
-    printf "[Warning: XINITRC set but does not exist!]\n"
+    printf "[Warning: XINITRC is set but does not exist!]\n" >&2
   fi
 elif [[ -e "$HOME"/.xinitrc ]]; then
   xinitrc="$HOME/.xinitrc"
