@@ -140,11 +140,11 @@ if [[ "$vmods" ]]; then
   printf "%s " "${vmods[@]}"
 
   printf "\nXorg Graphics: "
-  optimus_open1=('i915' 'nv')
-  optimus_open1=('i915' 'nouveau')
-  optimus_prop=('i915' 'nvidia')
-  atidsg_open=('i915' 'radeon')
-  atidsg_prop=('fglrx' 'i915')
+  optimus_open1=('intel' 'nv')
+  optimus_open1=('intel' 'nouveau')
+  optimus_prop=('intel' 'nvidia')
+  atidsg_open=('intel' 'radeon')
+  atidsg_prop=('fglrx' 'intel')
   if [[ $vmods == $optimus_open1 ]] || [[ $vmods == $optimus_open2 ]]; then
     printf "Optimus (Intel & Nvidia) [OPEN]\n"
   elif [[ $vmods == $optimus_prop ]]; then
@@ -153,7 +153,7 @@ if [[ "$vmods" ]]; then
     printf "ATI Dynamic Switchable Graphics (Intel & AMD) [OPEN]\n"
   elif [[ $vmods == $atidsg_prop ]]; then
     printf "ATI Dynamic Switchable Graphics (Intel & AMD) [PROPRIETARY]\n"
-  elif [[ $vmods == "i915" ]]; then
+  elif [[ $vmods == "intel" ]]; then
     printf "Intel [OPEN]\n"
   elif [[ $vmods == "nv" ]] || [[ $vmods == "nouveau" ]]; then
     printf "Nvidia [OPEN]\n"
